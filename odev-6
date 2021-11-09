@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 
-# TEST CASES
+# TEST CASE
 # 1-https://www.lcwaikiki.com/tr-TR/TR adresine gidin.
 # 2-Herhangi bir kategori sayfasına gidin.
 # 3-Herhangi bir ürün sayfasına gidin.
