@@ -1,0 +1,58 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+
+# TEST CASES
+# 1-https://www.lcwaikiki.com/tr-TR/TR adresine gidin.
+# 2-Herhangi bir kategori sayfasına gidin.
+# 3-Herhangi bir ürün sayfasına gidin.
+# 4-Ürünü sepete ekleyin.
+# 5-Sepet sayfasına gidin.
+# 6-Ana sayfaya geri dönün.
+
+
+class LCW:
+    CATEGORY_PAGE = (By.CSS_SELECTOR, ".sf-with-ul")  # [0]
+    IS_CATEGORY_PAGE = (By.CSS_SELECTOR, ".product-item-wrapper")
+    PRODUCT_PAGE = (By.CLASS_NAME, "product-item-wrapper")  # [2]
+    IS_PRODUCT_PAGE = (By.CSS_SELECTOR, "")
+    SELECT_SIZE = (By.XPATH, "//*[@id='option-size']/a[1]")
+    SELECTED_SIZE = (By.CSS_SELECTOR, "a[class='selected']")
+    ADD_TO_CART = (By.CLASS_NAME, "add-to-cart-container")
+    CART_PAGE = (By.CLASS_NAME, "header-cart")
+    IS_CART_PAGE = (By.CLASS_NAME, "shop-cta")
+    MAIN_PAGE = (By.CLASS_NAME, "header-logo")
+    IS_MAIN_PAGE = (By.CSS_SELECTOR, ".homepage-container")
+    DRIVER_PATH = r"C:\Users\User\Desktop\chromeDriver\chromedriver.exe"
+    WEBSITE = "https://www.lcwaikiki.com/tr-TR/TR"
+
+    def __init__(self):
+        self.driver = webdriver.Chrome(self.DRIVER_PATH)
+        self.driver.maximize_window()
+        self.driver.get(self.WEBSITE)
+        self.wait = WebDriverWait(self.driver, 8)
+
+    def test_navigate(self):
+        self.wait.until(ec.presence_of_all_elements_located(self.CATEGORY_PAGE))[0].click()
+        assert len(self.wait.until(ec.presence_of_all_elements_located(self.IS_CATEGORY_PAGE))) > 7, True
+
+        self.wait.until(ec.presence_of_all_elements_located(self.PRODUCT_PAGE))[2].click()
+        assert 'SEPETE EKLE' in self.driver.page_source
+
+        self.wait.until(ec.element_to_be_clickable(self.SELECT_SIZE)).click()
+        assert self.wait.until(ec.presence_of_element_located(self.SELECTED_SIZE)), True
+
+        self.wait.until(ec.element_to_be_clickable(self.ADD_TO_CART)).click()
+
+        self.wait.until(ec.element_to_be_clickable(self.CART_PAGE)).click()
+        assert len(self.wait.until(ec.presence_of_all_elements_located(self.IS_CART_PAGE))) > 0, True
+
+        self.wait.until(ec.element_to_be_clickable(self.MAIN_PAGE)).click()
+        assert self.wait.until(ec.presence_of_element_located(self.IS_MAIN_PAGE)).is_displayed, True
+
+        self.driver.quit()
+
+
+LCW().test_navigate()
